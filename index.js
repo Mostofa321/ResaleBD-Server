@@ -31,13 +31,23 @@ const run = async () => {
             res.send(result);
         });
 
-        // read all products from database 
+        // read available products from database 
+        app.get('/products', async (req, res) => {
+            const query = {};
+            const result = await productsCollection.find(query).toArray();
+            if(result){
+                res.send(result);
+            }
+        });
+        // read products from database by categoryId 
         app.get('/category/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id);
             const query = {categoryId: id};
             const result = await productsCollection.find(query).toArray();
-            res.send(result);
+            if(result){
+                res.send(result);
+            }
         });
 
     } catch (err) {
