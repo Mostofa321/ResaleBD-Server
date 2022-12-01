@@ -23,6 +23,7 @@ const run = async () => {
     try {
         const categoriesCollection = client.db("productsDb").collection("categoriesCollection");
         const productsCollection = client.db("productsDb").collection("productsCollection");
+        const userCollection = client.db("usersDb").collection("usersCollection");
 
         // read all product category from database 
         app.get('/categories', async (req, res) => {
@@ -35,7 +36,7 @@ const run = async () => {
         app.get('/products', async (req, res) => {
             const query = {};
             const result = await productsCollection.find(query).toArray();
-            if(result){
+            if (result) {
                 res.send(result);
             }
         });
@@ -43,9 +44,31 @@ const run = async () => {
         app.get('/category/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id);
-            const query = {categoryId: id};
+            const query = { categoryId: id };
             const result = await productsCollection.find(query).toArray();
-            if(result){
+            if (result) {
+                res.send(result);
+            }
+        });
+
+        // send a user to Mongodb 
+        app.post('/user', async (req, res) => {
+            const user = req.body;
+            const result = await userCollection.insertOne(user);
+            if (result) {
+                console.log(`A document was inserted with the _id: ${result.insertedId}`);
+                res.send(result);
+            }
+        });
+
+        // read a user from Mongodb 
+        app.get('/user', async (req, res) => {
+            const email = req.query.email;
+            console.log(email);
+            const query = {email: email}
+            const result = await userCollection.findOne(query);
+            if (result) {
+                console.log(`A user was readed  ${result}`);
                 res.send(result);
             }
         });
