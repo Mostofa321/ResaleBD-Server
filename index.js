@@ -75,11 +75,39 @@ const run = async () => {
         app.get('/user', async (req, res) => {
             const email = req.query.email;
             console.log(email);
-            const query = {email: email}
+            const query = { email: email }
             const result = await userCollection.findOne(query);
             if (result) {
                 console.log(`A user was readed  ${result}`);
                 res.send(result);
+            }
+        });
+
+        // read all sellers from database 
+        app.get('/allSellers', async (req, res) => {
+            const query = {userRole: "seller"};
+            const result = await userCollection.find(query).toArray();
+            res.send(result);
+        });
+
+        // read all buyers from database 
+        app.get('/allBuyer', async (req, res) => {
+            const query = {userRole: "buyer"};
+            const result = await userCollection.find(query).toArray();
+            res.send(result);
+        });
+
+        // delete a user from database 
+        app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            console.log(id, query);
+            const result = await userCollection.deleteOne(query);
+            if (result.deletedCount > 0) {
+                res.send(result);
+                console.log("Successfully deleted one document.");
+            } else {
+                console.log("No documents matched the query. Deleted 0 documents.");
             }
         });
 
