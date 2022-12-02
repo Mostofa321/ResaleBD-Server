@@ -32,6 +32,16 @@ const run = async () => {
             res.send(result);
         });
 
+        // send a product to Mongodb 
+        app.post('/addProduct', async (req, res) => {
+            const product = req.body;
+            const result = await productsCollection.insertOne(product);
+            if (result) {
+                console.log(`A document was inserted with the _id: ${result.insertedId}`);
+                res.send(result);
+            }
+        });
+
         // read available products from database 
         app.get('/products', async (req, res) => {
             const query = {};
